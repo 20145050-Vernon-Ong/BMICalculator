@@ -8,6 +8,8 @@
 
 package bmi;
 
+import java.util.regex.Pattern;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,7 +31,9 @@ public class BMI extends Application {
 	private Label weightText = new Label();
 	private Label heightText = new Label();
 	private Label resultText = new Label();
+	private Label display = new Label();
 	private Button calculate = new Button();
+	private Button reset = new Button();
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -38,19 +42,26 @@ public class BMI extends Application {
 
 	public void start(Stage primaryStage) {
 		// TODO Auto-generated method stub
-		weightText.setText("Enter Your Weight:");
-		heightText.setText("Enter your Height:");
+		weightText.setText("Enter Your Weight in (kg):");
+		heightText.setText("Enter your Height Metre (m):");
 		resultText.setText("Result:");
 		calculate.setText("Calculate BMI");
+		reset.setText("Reset");
 		weight.setPrefColumnCount(25);
 		height.setPrefColumnCount(25);
 		result.setPrefColumnCount(25);
+		result.setEditable(false);
 		
-		pane.getChildren().addAll(weightText, weight, heightText, height, resultText, result, calculate);
+		pane.getChildren().addAll(weightText, weight, heightText, height, resultText, result, calculate, reset, display);
 		pane.setAlignment(Pos.CENTER);
+		
+		EventHandler<ActionEvent> res = (ActionEvent e) -> reset();
+		reset.setOnAction(res);
 		
 		EventHandler<ActionEvent> cal = (ActionEvent e) -> calculateBMI();
 		calculate.setOnAction(cal);
+		
+		
 		
 		Scene mainScene = new Scene(pane);
 		
@@ -64,6 +75,25 @@ public class BMI extends Application {
 	
 	public void calculateBMI() {
 		
+		String regEx = "[1-9](.){1}[1-9]";
+		double total = 0;
+		boolean matching = Pattern.matches(regEx, height.getText());
+		if (matching == true) {
+			double WEIGHT = Double.valueOf(weight.getText());
+			double HEIGHT = Double.valueOf(height.getText());
+			total = WEIGHT/(HEIGHT * HEIGHT);
+			result.setText(String.valueOf(total));
+		} else {
+			display.setText("Invalid value!");
+		}
+		
+	}
+	
+	public void reset() {
+		weight.clear();
+		height.clear();
+		result.clear();
+		pane.getChildren().remove(display);
 	}
 
 }
